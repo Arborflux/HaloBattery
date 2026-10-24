@@ -133,6 +133,7 @@ from pystray import Menu, MenuItem as Item  # noqa: E402
 from halo import flyout, history, icons, updates, whatsnew, winevents  # noqa: E402
 from providers import hidlist  # noqa: E402
 from providers import (AmInfinityProvider, AstroProvider, AsusProvider,  # noqa: E402
+                         AulaProvider,
                        AudezeProvider, BarracudaProvider, BluetoothProvider, CorsairProvider, DeviceStatus,
                        EightBitDoProvider,
                        GWolvesProvider, HyperXAlpha2Provider, HyperXCloud3Provider, HyperXCloud3SProvider,
@@ -183,6 +184,7 @@ PROVIDER_LABELS = {
     "am_infinity": "AM Infinity 8K (Angry Miao)",
     "astro": "Astro A50",
     "asus": "ASUS ROG / TUF mice",
+    "aula": "AULA F87 Pro V2C keyboards",
     "audeze": "Audeze Maxwell",
     "barracuda": "Razer Barracuda Pro",
     "corsair": "Corsair headsets",
@@ -194,7 +196,7 @@ PROVIDER_LABELS = {
     "jbl": "JBL Quantum",
     "keychron": "Keychron",
     "lamzu": "LAMZU mice",
-    "lofree": "Lofree keyboards",
+    "lofree": "Lofree keyboards, AULA V9 mice",
     "logitech": "Logitech",
     "logitech_centurion": "Logitech G PRO X 2 LIGHTSPEED",
     "mchose": "MCHOSE mice",
@@ -214,11 +216,12 @@ PROVIDER_LABELS = {
 def make_providers(jbl_listen_first: float = 0.0) -> list:
     # jbl_listen_first: only --probe passes it, so its single poll waits for a JBL level
     return [RazerProvider(), AudezeProvider(), WLmouseProvider(), MchoseProvider(),
+            AulaProvider(), LofreeProvider(),
             HyperXAlpha2Provider(), HyperXCloud3Provider(), HyperXProvider(),
             KeychronProvider(), PulsarProvider(),
             JblProvider(listen_first=jbl_listen_first), LogitechProvider(), SteelSeriesProvider(), XInputProvider(),
             PlayStationProvider(), EightBitDoProvider(), BarracudaProvider(), NintendoProvider(),
-            AsusProvider(), GWolvesProvider(), LofreeProvider(), AstroProvider(), CorsairProvider(),
+            AsusProvider(), GWolvesProvider(), AstroProvider(), CorsairProvider(),
             LamzuProvider(), AmInfinityProvider(),
             SteelSeriesEliteProvider(), LogitechCenturionProvider(), HyperXCloud3SProvider(), NzxtProvider(),
             SteamProvider()]

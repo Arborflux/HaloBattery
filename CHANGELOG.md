@@ -6,6 +6,18 @@ and the project follows [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+### Added
+- **AULA V9 Max+ mice (`320F:22A0` receiver, `320F:22B7` cable)**: the receiver answers the
+  same `0xFF1C/0x92` exchange Lofree's keyboards use, so it is read by the Lofree provider.
+  One byte past the level is the charge state, which the keyboards do not send, and the
+  receiver pushes a link-state frame that says whether the mouse is switched on. Both
+  transports were measured against the maker's own app on the same machine.
+- **AULA F87 Pro V2C keyboards (`0C45:FEFC`)**: a new provider for the `0xFF80/0x0001`
+  exchange - `AA 10` answers `55 10 <type> ... <level>` at byte 26, and both frame types
+  carry the level, so an idle keyboard that only sends the incremental one still reads. The
+  receiver does not cache, so a switched-off keyboard shows no icon. The cable identity
+  (`38A6:2712`) is not claimed: it reports no battery at all.
+
 ### Changed
 - **A tidier repository and a shorter README**: the app's modules moved into the `halo/`
   package (`halo_battery.pyw` stays the entry point), the .bat helpers into `scripts/`

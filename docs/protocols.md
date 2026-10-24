@@ -138,6 +138,11 @@ The same `b0` exchange as the other Nova headsets, asked for with report id `06`
 
 The AJAZZ Control Center project's AJ-series exchange: a zero-payload `0xF7` status poll brings the receiver's 2.4G telemetry up, then the charge reads from status report `0x05` (`05 00 00 64 01 01 01 02`, charge at byte 3 on Windows). A zero charge or junk bytes are shown as no level rather than a wrong value, and no charging state is reported. **Unverified** - no AM Infinity was on hand; the exchange is confirmed on the reference project's own unit, so the layout stands until the reporter of #72 confirms it
 
+### AULA V9 Max+ mouse (320F:22A0 receiver, 320F:22B7 cable)
+
+**Connection:** 2.4 GHz receiver or USB cable
+
+The same `0xFF1C/0x92` exchange Lofree's keyboards use, which this mouse answers unchanged: report 0x04, `00 00 01` start, `00 00 1A 00 00 00 00 00` for the battery, the level at byte 7 of the payload after the report id - measured `00 00 1a 00 00 00 00 59` = 89 % - then `00 00 02` end. One byte past the level is a charge state the keyboards do not send: 0 not charging, 1 charging, 2 charged, measured as `.. 64 00`, `.. 63 01` and `.. 64 02` on the same mouse idle, on the cable and full. The maker's app counts 1 and 2 as charging, and so does this. A level of 0 is refused: a receiver that was just re-plugged answers zeros until the mouse reports, and 0 % would fire a false alert. The receiver answers from its cache whether the mouse is on or off, so the level alone proves nothing; a frame the receiver pushes every ~0.5 s, `04 AA 00 AA 00 00 00 00 <state>`, carries the link state (0xFF on, 0x00 off - measured five seconds apart in one session) and is used to mark a reading as offline. It is absent while the mouse idles, so it is never required. Source: AULA HUB, AULA's own Electron app, with its HID calls hooked over CDP to recover the command, and the frames replayed on the hardware. The cable and the receiver share one icon.
 ### ASUS ROG Gladius III Aimpoint and other ROG / TUF wireless mice
 
 **Connection:** 2.4 GHz receiver or USB cable (for example 0B05:1A72)
@@ -275,6 +280,11 @@ last value on a greyed icon, so live readings want CAM closed.
 
 ## Mice and keyboards
 
+### AULA F87 Pro V2C keyboard (0C45:FEFC receiver)
+
+**Connection:** 2.4 GHz receiver
+
+Usage page `0xFF80` usage `0x0001`, 33-byte reports, no report id in the payload: `00 AA 10 00 ...` asks, `00 55 10 <type> ... <level>` answers with the level at byte 26. Byte 3 is a frame type rather than a length - `0x18` full, `0x00` incremental - and both carry the level (measured 0x60 = 96 % full and 0x5F = 95 % incremental, minutes apart), so the full frame is not required; an idle keyboard only ever sends the incremental one. There is no charge state: a sweep of commands 0x01..0x1F answered on 0x10 only and did not change while the battery went 96 % to 100 %. `hidapi` drops the leading 0 report id on some backends, so the header is accepted at byte 0 too. The receiver does not cache - with the keyboard switched off the query gets no reply at all, against ~30 ms while it is on - so a silent keyboard shows no icon. The cable identity (`38A6:2712`, `0xFF67`/`0xFF68`, 65-byte reports) is not claimed: its feature reports echo only the report id and the same query answers a configuration block (`00 55 10 00 ... 0C 11 0A 10 ... 8C`) with no percentage at any command. Source: AULA HUB, hooked the same way, then confirmed on the hardware.
 ### Keychron Ultra-Link 8K, Keychron M5
 
 **Connection:** 2.4 GHz receiver (3434:D028) and USB cable (3434:D048)
